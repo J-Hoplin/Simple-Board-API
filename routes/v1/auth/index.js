@@ -15,9 +15,11 @@ const router = Router();
  */
 router.post('/join',async (req,res,next) => {
     try{
-        await component.userJoin(req);
+        const result = await component.authJoin(req);
         return res.status(200).json(
-            util.commonMessage("OK")
+            util.messageWithData("OK",{
+                id : result.id
+            })
         )
     }catch(err){
         next(err);
@@ -29,9 +31,38 @@ router.post('/join',async (req,res,next) => {
  */
 router.post('/login',async (req,res,next) => {
     try{
-        req.user = await component.userLogin(req)
+        req.user = await component.authLogin(req)
         // Middleware extend pattern
         generateToken(req,res,next);
+    }catch(err){
+        next(err)
+    }
+})
+
+/**
+ * Verify user email dedication
+ */
+router.post('/dedicate-email',async(req,res,next) => {
+    try{
+        // True if user email already exist
+        const result = await component.authDedicateEmail(req);
+        return res.status(200).json(
+            util.commonMessage(result)
+        )
+    }catch(err){
+        next(err)
+    }
+})
+
+/**
+ * Verify user nickname dedication
+ */
+router.post('/dedicate-nickname',async(req,res,next) => {
+    try{
+        const result = await component.authDedicateEmail(req);
+        return res.status(200).json(
+            util.commonMessage(result)
+        )
     }catch(err){
         next(err)
     }
@@ -42,10 +73,19 @@ router.post('/login',async (req,res,next) => {
  */
 router.post('/withdraw',verifyToken,async (req,res,next) => {
     try{
-        await component.userWithdraw(req)
+        await component.authWithdraw(req)
         return res.status(200).json(
             util.commonMessage("OK")
         )
+    }catch(err){
+        next(err)
+    }
+})
+
+router.post('/token',async (req,res,next) => {
+    try{
+        req.user = await component.authToken(req);
+        generateToken(req,res,next);
     }catch(err){
         next(err)
     }

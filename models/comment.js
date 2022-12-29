@@ -1,16 +1,20 @@
 const Sequelize = require('sequelize')
 
-class Hashtag extends Sequelize.Model{
+class Comment extends Sequelize.Model{
     static init(sequelize){
         return super.init({
-            title : {
-                type : Sequelize.STRING(30),
+            content : {
+                type : Sequelize.TEXT,
+                allowNull : false
+            },
+            authorId : {
+                type : Sequelize.UUID,
                 allowNull : false
             }
         },{
             sequelize,
-            modelName : 'Hashtag',
-            tableName : 'hashtags',
+            modelName : 'Comment',
+            tableName : 'comments',
             timestamps : false,
             paranoid : false,
             underscored : false,
@@ -18,12 +22,14 @@ class Hashtag extends Sequelize.Model{
             collate : 'utf8_general_ci'
         })
     }
+
     static associate(db){
-        db.Hashtag.belongsToMany(db.Post, {
-            through : 'Post_Hashtag',
+        db.Comment.belongsTo(db.Post,{
+            foreignKey : 'postId',
+            targetKey : 'id',
             onDelete: "cascade"
         })
     }
 }
 
-module.exports = Hashtag
+module.exports = Comment;

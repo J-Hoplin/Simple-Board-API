@@ -17,6 +17,12 @@ exports.BadRequest = class BadRequest extends ErrorInterface{
     }
 }
 
+exports.ForbiddenRequest = class ForbiddenRequest extends ErrorInterface{
+    constructor(bucket){
+        super(bucket)
+    }
+}
+
 exports.QueryFailed = class QueryFailed extends ErrorInterface{
     constructor(bucket){
         super(bucket)

@@ -19,3 +19,12 @@ exports.messageWithData = (msg,data) => {
         data
     }
 }
+
+exports.flattenArgs = function flattenArgs(args){
+    return args.reduce((acc,cur) => {
+        if(Array.isArray(cur)){
+            return acc.concat(flattenArgs(cur));
+        }
+        return acc.concat(cur)
+    },new Array())
+}

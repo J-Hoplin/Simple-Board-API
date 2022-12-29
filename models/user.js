@@ -34,9 +34,9 @@ class User extends Sequelize.Model{
                 allowNull : false
             },
             level : {
-                type : Sequelize.INTEGER,
+                type : Sequelize.ENUM,
                 values : Array.from({ length : 5 }, (v,i) => {
-                    i + 1
+                    return String(i + 1)
                 }),
                 allowNull : false
             },
@@ -65,7 +65,11 @@ class User extends Sequelize.Model{
 
     static associate(db){
         // User - Post : 1 : N
-        db.User.hasMany(db.Post);
+        db.User.hasMany(db.Post,{
+            foreignKey : 'authorId',
+            sourceKey : 'id',
+            onDelete: "cascade"
+        });
     }
 }
 

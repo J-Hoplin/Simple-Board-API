@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const { JWT_GENERATE_SUCCESS } = require('../Codes');
 const { Codes, commonMessage, messageWithToken } = require('../util')
 
 exports.verifyToken = (req,res,next) => {
@@ -40,7 +39,7 @@ exports.generateToken = (req,res,next) => {
             issuer : process.env.ISSUER
         }
     );
-    return res.status(JWT_GENERATE_SUCCESS.code).json(
-        messageWithToken(JWT_GENERATE_SUCCESS.message,token)
+    return res.status(Codes.JWT_GENERATE_SUCCESS.code).json(
+        messageWithToken(Codes.JWT_GENERATE_SUCCESS.message,token)
     )
 }

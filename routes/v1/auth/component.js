@@ -9,8 +9,9 @@ const {
 } = require('../../../models')
 const {v4} = require('uuid')
 const bcrypt = require('bcrypt')
+const { Op } = require('sequelize')
 
-exports.userJoin = async (req) => {
+exports.authJoin = async (req) => {
     const {
         password,
         email,
@@ -20,7 +21,14 @@ exports.userJoin = async (req) => {
     } = req.body
     const user = await User.findOne({
         where : {
-            email
+            [Op.or] : [
+                {
+                    nickname
+                },
+                {
+                    email
+                }
+            ]
         }
     })
     if(user){
@@ -43,7 +51,7 @@ exports.userJoin = async (req) => {
     }
 }
 
-exports.userLogin = async (req) => {
+exports.authLogin = async (req) => {
     const {
         email,
         password
@@ -62,7 +70,31 @@ exports.userLogin = async (req) => {
     return user
 }
 
-exports.userWithdraw = async(req) => {
+exports.authDedicateEmail = async (req) => {
+    const {
+        email
+    } = req.body
+    const checkUserExist = await User.findOne({
+        where: {
+            email
+        }
+    })
+    return Boolean(checkUserExist)
+}
+
+exports.authDedicateNickname = async(req) => {
+    const {
+        nickname
+    } = req.body
+    const checkUserExist = await User.findOne({
+        where : {
+            email
+        }
+    })
+    return Boolean(checkUserExist)
+}
+
+exports.authWithdraw = async(req) => {
     const {
         password
     } = req.body;
@@ -87,4 +119,19 @@ exports.userWithdraw = async(req) => {
         throw QueryFailed(Codes.USER_WITHDRAW_FAIL);
     }
     
+}
+
+exports.authToken = async(req) => {
+    const {
+        id
+    } = req.body
+    const user = await User.findOne({
+        where : {
+            id
+        }
+    })
+    if(!user){
+        throw new BadRequest(Codes.USER_NOT_EXIST)
+    }
+    return user
 }

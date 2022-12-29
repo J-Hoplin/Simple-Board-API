@@ -13,7 +13,7 @@ app.set('port',process.env.PORT || 6000);
 const { sequelize } = require('./models')
 sequelize.sync({
     // Prevent re-genration of table, per server initialized
-    force : false 
+    force : true 
 })
 .then(() => {
     console.log("Database connection success");
@@ -27,7 +27,7 @@ sequelize.sync({
 app.use(
     express.json(),
     express.urlencoded({
-        extended: false
+        extended: true
     })
 )
 

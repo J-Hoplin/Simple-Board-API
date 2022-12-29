@@ -34,9 +34,19 @@ class Post extends Sequelize.Model{
         })
     }
     static associate(db){
-        db.Post.belongsTo(db.User);
+        db.Post.belongsTo(db.User,{
+            foreignKey : 'authorId',
+            targetKey : 'id',
+            onDelete: "cascade"
+        });
         db.Post.belongsToMany(db.Hashtag, {
-            through : 'Post_Hashtag'
+            through : 'Post_Hashtag',
+            onDelete: "cascade"
+        })
+        db.Post.hasMany(db.Comment, {
+            foreignKey : 'postId',
+            sourceKey : 'id',
+            onDelete: 'cascade'
         })
     }
 }
