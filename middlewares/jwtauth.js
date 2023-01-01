@@ -1,5 +1,21 @@
 const jwt = require('jsonwebtoken');
-const { Codes, commonMessage, messageWithToken } = require('../util')
+const { Codes, commonMessage, messageWithToken, convertToSecond } = require('../util')
+const redis = require('redis')
+
+let redisClient = redis.createClient({
+    legacyMode : true
+})
+
+redisClient.on('connect',() => {
+    console.log("Redis connection success")
+})
+
+redisClient.on('error',() => {
+    console.error(`Redis error : ${err}`)
+})
+
+redisClient.connect().then();
+redisClient = redisClient.v4
 
 exports.verifyToken = (req,res,next) => {
     try{
@@ -28,17 +44,33 @@ exports.verifyToken = (req,res,next) => {
     }
 }
 
-exports.generateToken = (req,res,next) => {
+exports.generateToken = async (req,res,next) => {
+    const id = req.user.id
     const token = jwt.sign(
         {
-            id : req.user.id
+            id
         },
         process.env.JWT_SECRET
         ,{
-            expiresIn: '5m',
+            expiresIn: process.env.JWT_EXPIRE,
             issuer : process.env.ISSUER
         }
     );
+    const refreshToken = jwt.sign(
+        {},
+        process.env.JWT_SECRET
+        ,{
+            expiresIn: process.env.JWT_REFRESH_EXPIRE,
+            issuer : process.env.ISSUER
+        }
+    )
+    // save refresh token to Redis
+    // use convertToSecond() util function(define in util.js) for converting to second.
+    await redisClient.setEx(
+        id,
+        convertToSecond(process.env.JWT_REFRESH_EXPIRE),
+        refreshToken
+    )
     return res.status(Codes.JWT_GENERATE_SUCCESS.code).json(
         messageWithToken(Codes.JWT_GENERATE_SUCCESS.message,token)
     )

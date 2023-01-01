@@ -1,5 +1,6 @@
 const express = require('express')
 const logger = require('morgan')
+const cors = require('cors')
 const util = require('./util')
 const dotenv = require('dotenv')
 
@@ -25,6 +26,7 @@ sequelize.sync({
 })
 
 app.use(
+    cors(),
     express.json(),
     express.urlencoded({
         extended: true

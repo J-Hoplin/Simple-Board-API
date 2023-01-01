@@ -1,3 +1,8 @@
+# Node modules
 node_modules
 
+# DS Store
 .DS_Store
+
+# Javascript test file
+test.js

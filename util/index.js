@@ -1,3 +1,5 @@
+const ms = require('ms')
+
 exports.Codes = {...require('../Codes')}
 
 exports.commonMessage = (msg) => {
@@ -27,4 +29,8 @@ exports.flattenArgs = function flattenArgs(args){
         }
         return acc.concat(cur)
     },new Array())
+}
+
+exports.convertToSecond = (time) => {
+    return ms(time) / 1000
 }
