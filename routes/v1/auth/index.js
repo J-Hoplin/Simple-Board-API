@@ -3,7 +3,9 @@ const Router = require('express').Router
 // JWT middlewares
 const {
     verifyToken,
-    generateToken
+    generateToken,
+    refreshTokenPreprocess,
+    refreshTokenVerifyAndRegenerate
 } = require('../../../middlewares')
 const component = require('./component')
 const util = require('../../../util')
@@ -90,5 +92,7 @@ router.post('/token',async (req,res,next) => {
         next(err)
     }
 })
+
+router.post('/refresh',refreshTokenPreprocess,refreshTokenVerifyAndRegenerate)
 
 module.exports = router;

@@ -85,4 +85,16 @@ router.put('/edit',verifyToken,checkUserRole(adminNuser),async(req,res,next) => 
     }
 })
 
+router.post('/checkpassword',verifyToken,checkUserRole(adminNuser),async(req,res,next) => {
+    try{
+        const result = await component.userCheckPassword(req)
+        return res.status(200).json(
+            util.commonMessage(result)
+        )
+    }catch(err){
+        next(err)
+    }
+})
+
+
 module.exports = router

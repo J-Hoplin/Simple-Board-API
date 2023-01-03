@@ -24,7 +24,7 @@ exports.authJoin = async (req) => {
             [Op.or] : [
                 {
                     nickname
-                },
+                },  
                 {
                     email
                 }
@@ -34,7 +34,7 @@ exports.authJoin = async (req) => {
     if(user){
         throw new BadRequest(Codes.USER_ALREADY_EXIST)
     }
-    const hashpwd = await bcrypt.hash(password,12);
+    const hashpwd = await bcrypt.hash(password,parseInt(process.env.ENCRYPT_COUNT));
     try{
         return await User.create({
             id : v4(),

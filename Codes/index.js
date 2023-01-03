@@ -21,6 +21,8 @@ exports.OK = format(SUCCESS)
 exports.DEPRECATED_API = format("This API has been deprecated",410)
 exports.BLOCKED_API = format("This API has been blocked",403) // For api development
 exports.FORBIDDEN_API = format("Forbidden Reqest",403)
+exports.UNAUTHORIZED = format("Unauthorized user or request",401)
+exports.LOGIC_ERROR = format("API logic error",500)
 
 // Query Failed
 exports.ETERNAL_QUERY_ERROR = format("Query run failed. Check Database Connection",500)

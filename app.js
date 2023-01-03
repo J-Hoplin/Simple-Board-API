@@ -14,7 +14,7 @@ app.set('port',process.env.PORT || 6000);
 const { sequelize } = require('./models')
 sequelize.sync({
     // Prevent re-genration of table, per server initialized
-    force : true 
+    force : false
 })
 .then(() => {
     console.log("Database connection success");
@@ -30,7 +30,10 @@ app.use(
     express.json(),
     express.urlencoded({
         extended: true
-    })
+    }),
+    process.env.MODE === 'development'
+    ? logger('dev')
+    : logger('combined')
 )
 
 // Enroll router
