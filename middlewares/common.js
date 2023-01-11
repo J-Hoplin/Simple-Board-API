@@ -24,6 +24,7 @@ exports.deprecated = (req,res) => {
 // This should be after verifytoken 
 exports.checkUserRole = (roles) => {
     return async (req,res,next) => {
+        // req.decoded will be added from verifyJWT middleware 
         const {
             id
         } = req.decoded

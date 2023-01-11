@@ -1,5 +1,6 @@
 const express = require('express')
 const logger = require('morgan')
+const cors = require('cors')
 const util = require('./util')
 const dotenv = require('dotenv')
 
@@ -13,7 +14,7 @@ app.set('port',process.env.PORT || 6000);
 const { sequelize } = require('./models')
 sequelize.sync({
     // Prevent re-genration of table, per server initialized
-    force : true 
+    force : false
 })
 .then(() => {
     console.log("Database connection success");
@@ -25,10 +26,14 @@ sequelize.sync({
 })
 
 app.use(
+    cors(),
     express.json(),
     express.urlencoded({
-        extended: true
-    })
+        extended: false
+    }),
+    process.env.MODE === 'development'
+    ? logger('dev')
+    : logger('combined')
 )
 
 // Enroll router

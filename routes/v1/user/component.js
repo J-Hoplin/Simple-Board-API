@@ -43,7 +43,7 @@ exports.userInfo = async(req) => {
             "birth" : user.birth
         }
     }catch(err){
-        throw QueryFailed(Codes.ETERNAL_QUERY_ERROR)
+        throw new QueryFailed(Codes.LOGIC_ERROR)
     }
 }
 
@@ -65,7 +65,7 @@ exports.userList = async(req) => {
             users
         }
     }catch(err){
-        throw QueryFailed(Codes.ETERNAL_QUERY_ERROR)
+        throw new QueryFailed(Codes.LOGIC_ERROR)
     }
 }
 
@@ -80,10 +80,14 @@ exports.userLevelUp = async(req) => {
                 id
             }
         })
+        // If user not exis
+        if(!user){
+            throw new BadRequest(Codes.USER_NOT_EXIST)
+        }
         // If max level, resave to max level, else new level
         const newlevel = parsetInt(user.level) + 1
         if(!checkUserLevelAvailable(newlevel)){
-            throw BadRequest(Codes.USER_LEVEL_RANGE_UNAVAILABLE)
+            throw new BadRequest(Codes.USER_LEVEL_RANGE_UNAVAILABLE)
         }
         user.set({
             level : newlevel.toString()
@@ -91,7 +95,7 @@ exports.userLevelUp = async(req) => {
         await user.save();
         return user;
     }catch(err){
-        throw QueryFailed(Codes.ETERNAL_QUERY_ERROR)
+        throw new QueryFailed(Codes.LOGIC_ERROR)
     }
 }
 
@@ -106,9 +110,13 @@ exports.userLevelDown = async(req) => {
                 id
             }
         })
+        // If user not exist
+        if(!user){
+            throw new BadRequest(Codes.USER_NOT_EXIST);
+        }
         const newlevel = parseInt(user.level) - 1
         if(!checkUserLevelAvailable(newlevel)){
-            throw BadRequest(Codes.USER_LEVEL_RANGE_UNAVAILABLE)
+            throw new BadRequest(Codes.USER_LEVEL_RANGE_UNAVAILABLE)
         }
         user.set({
             level : newlevel.toString()
@@ -116,22 +124,44 @@ exports.userLevelDown = async(req) => {
         await user.save();
         return user
     }catch(err){
-        throw QueryFailed(Codes.ETERNAL_QUERY_ERROR)
+        throw new QueryFailed(Codes.LOGIC_ERROR)
     }
 }
 
 exports.userEdit = async(req) => {
     try{
-        const {
+        let {
             password,
             nickname,
+            changedPassword,
             birth
         } = req.body
         const {
             id
         } = req.decoded
+
+        // Find user
+        const user = await User.findOne({
+            attributes : ["password","nickname","birth"],
+            where : {
+                id
+            }
+        })
+        // If user not exist
+        if(!user){
+            throw new BadRequest(Codes.USER_NOT_EXIST)
+        }
+        // If password is unmatched
+        if(!await bcrypt.compare(password,user.password)){
+            throw new BadRequest(Codes.USER_PASSWORD_UNMATCHED)
+        }
+        // Encrypt user's password if changed password typed
+        const hasedPassword = changedPassword ? await bcrypt.hash(changedPassword,parseInt(process.env.ENCRYPT_COUNT)) : password;
+        nickname = nickname ? nickname : user.nickname
+        birth = birth ? birth : user.birth
+        // update user
         await User.update({
-            password,
+            password : hasedPassword,
             nickname,
             birth
         },{
@@ -141,6 +171,40 @@ exports.userEdit = async(req) => {
         })
         return true
     }catch(err){
-        throw QueryFailed(Codes.ETERNAL_QUERY_ERROR)
+        console.error(err)
+        throw new QueryFailed(Codes.LOGIC_ERROR)
+    }
+}
+
+exports.userCheckPassword = async (req) => {
+    try{
+        // Get password from body
+        const {
+            password
+        } = req.body
+
+        // Get id from token decoded
+        const {
+            id
+        } = req.decoded
+        
+        // Get user
+        const user = await User.findOne({
+            attributes : ["password"],
+            where : {
+                id
+            }
+        })
+
+        // If user not exist
+        if(!user){
+            throw new BadRequest(Codes.USER_NOT_EXIST)
+        }
+        // Verify password
+        const pwverify = await bcrypt.compare(password,user.password);
+        console.log(password)
+        return pwverify ? true : false
+    }catch(err){
+        throw new QueryFailed(Codes.LOGIC_ERROR)
     }
 }

@@ -24,7 +24,7 @@ exports.authJoin = async (req) => {
             [Op.or] : [
                 {
                     nickname
-                },
+                },  
                 {
                     email
                 }
@@ -34,7 +34,7 @@ exports.authJoin = async (req) => {
     if(user){
         throw new BadRequest(Codes.USER_ALREADY_EXIST)
     }
-    const hashpwd = await bcrypt.hash(password,12);
+    const hashpwd = await bcrypt.hash(password,parseInt(process.env.ENCRYPT_COUNT));
     try{
         return await User.create({
             id : v4(),
@@ -47,7 +47,7 @@ exports.authJoin = async (req) => {
             birth
         })
     }catch(err){
-        throw QueryFailed(Codes.USER_FAIL_ENROLL);
+        throw new QueryFailed(Codes.USER_FAIL_ENROLL);
     }
 }
 
@@ -116,9 +116,8 @@ exports.authWithdraw = async(req) => {
             }
         })
     }catch(err){
-        throw QueryFailed(Codes.USER_WITHDRAW_FAIL);
+        throw new QueryFailed(Codes.USER_WITHDRAW_FAIL);
     }
-    
 }
 
 exports.authToken = async(req) => {
