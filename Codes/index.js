@@ -35,6 +35,10 @@ exports.USER_PASSWORD_UNMATCHED = format("Password not matched",400)
 exports.USER_WITHDRAW_FAIL = format("Something went wrong while user withdraw",500)
 exports.USER_LEVEL_RANGE_UNAVAILABLE = format("User level range unavailable",400)
 
+// Posts
+exports.POST_NOT_FOUND = format("Post with ID not found",400);
+exports.POST_INVALID_AUTHOR = format("Invalid post's author ID",400);
+
 // JWT Related Message
 exports.JWT_GENERATE_SUCCESS = format(SUCCESS)
 exports.JWT_TOKEN_EXPIRE = format("Token expired",419)

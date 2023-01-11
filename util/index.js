@@ -22,6 +22,15 @@ exports.messageWithData = (msg,data) => {
     }
 }
 
+exports.arrayComparison = (arr1,arr2) => {
+    if(arr1.length === arr2.length){
+        return arr1.every(x => {
+            return arr2.includes(x)
+        });
+    }
+    return false;
+}
+
 exports.flattenArgs = function flattenArgs(args){
     return args.reduce((acc,cur) => {
         if(Array.isArray(cur)){

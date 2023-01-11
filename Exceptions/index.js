@@ -28,3 +28,9 @@ exports.QueryFailed = class QueryFailed extends ErrorInterface{
         super(bucket)
     }
 }
+
+exports.LogicError = class LogicError extends ErrorInterface{
+    constructor(bucket){
+        super(bucket)
+    }
+}

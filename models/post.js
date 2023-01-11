@@ -4,10 +4,9 @@ class Post extends Sequelize.Model{
     static init(sequelize){
         return super.init({
             id : {
-                type : Sequelize.BIGINT,
+                type : Sequelize.UUID,
                 primaryKey: true,
-                allowNull : false,
-                autoIncrement : true
+                allowNull : false
             },
             title : {
                 type : Sequelize.STRING(100),
@@ -40,7 +39,7 @@ class Post extends Sequelize.Model{
             onDelete: "cascade"
         });
         db.Post.belongsToMany(db.Hashtag, {
-            through : 'Post_Hashtag',
+            through : 'PostHashtag',
             onDelete: "cascade"
         })
         db.Post.hasMany(db.Comment, {

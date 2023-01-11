@@ -47,7 +47,7 @@ exports.authJoin = async (req) => {
             birth
         })
     }catch(err){
-        throw QueryFailed(Codes.USER_FAIL_ENROLL);
+        throw new QueryFailed(Codes.USER_FAIL_ENROLL);
     }
 }
 
@@ -116,9 +116,8 @@ exports.authWithdraw = async(req) => {
             }
         })
     }catch(err){
-        throw QueryFailed(Codes.USER_WITHDRAW_FAIL);
+        throw new QueryFailed(Codes.USER_WITHDRAW_FAIL);
     }
-    
 }
 
 exports.authToken = async(req) => {

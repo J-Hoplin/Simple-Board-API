@@ -29,7 +29,7 @@ app.use(
     cors(),
     express.json(),
     express.urlencoded({
-        extended: true
+        extended: false
     }),
     process.env.MODE === 'development'
     ? logger('dev')

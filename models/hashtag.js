@@ -5,7 +5,8 @@ class Hashtag extends Sequelize.Model{
         return super.init({
             title : {
                 type : Sequelize.STRING(30),
-                allowNull : false
+                allowNull : false,
+                unique : true
             }
         },{
             sequelize,
@@ -20,7 +21,7 @@ class Hashtag extends Sequelize.Model{
     }
     static associate(db){
         db.Hashtag.belongsToMany(db.Post, {
-            through : 'Post_Hashtag',
+            through : 'PostHashtag',
             onDelete: "cascade"
         })
     }

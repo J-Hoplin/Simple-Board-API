@@ -43,7 +43,7 @@ exports.userInfo = async(req) => {
             "birth" : user.birth
         }
     }catch(err){
-        throw QueryFailed(Codes.LOGIC_ERROR)
+        throw new QueryFailed(Codes.LOGIC_ERROR)
     }
 }
 
@@ -65,7 +65,7 @@ exports.userList = async(req) => {
             users
         }
     }catch(err){
-        throw QueryFailed(Codes.LOGIC_ERROR)
+        throw new QueryFailed(Codes.LOGIC_ERROR)
     }
 }
 
@@ -87,7 +87,7 @@ exports.userLevelUp = async(req) => {
         // If max level, resave to max level, else new level
         const newlevel = parsetInt(user.level) + 1
         if(!checkUserLevelAvailable(newlevel)){
-            throw BadRequest(Codes.USER_LEVEL_RANGE_UNAVAILABLE)
+            throw new BadRequest(Codes.USER_LEVEL_RANGE_UNAVAILABLE)
         }
         user.set({
             level : newlevel.toString()
@@ -95,7 +95,7 @@ exports.userLevelUp = async(req) => {
         await user.save();
         return user;
     }catch(err){
-        throw QueryFailed(Codes.LOGIC_ERROR)
+        throw new QueryFailed(Codes.LOGIC_ERROR)
     }
 }
 
@@ -116,7 +116,7 @@ exports.userLevelDown = async(req) => {
         }
         const newlevel = parseInt(user.level) - 1
         if(!checkUserLevelAvailable(newlevel)){
-            throw BadRequest(Codes.USER_LEVEL_RANGE_UNAVAILABLE)
+            throw new BadRequest(Codes.USER_LEVEL_RANGE_UNAVAILABLE)
         }
         user.set({
             level : newlevel.toString()
@@ -124,7 +124,7 @@ exports.userLevelDown = async(req) => {
         await user.save();
         return user
     }catch(err){
-        throw QueryFailed(Codes.LOGIC_ERROR)
+        throw new QueryFailed(Codes.LOGIC_ERROR)
     }
 }
 
@@ -159,7 +159,6 @@ exports.userEdit = async(req) => {
         const hasedPassword = changedPassword ? await bcrypt.hash(changedPassword,parseInt(process.env.ENCRYPT_COUNT)) : password;
         nickname = nickname ? nickname : user.nickname
         birth = birth ? birth : user.birth
-        console.log(hasedPassword   )
         // update user
         await User.update({
             password : hasedPassword,
