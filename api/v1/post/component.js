@@ -46,7 +46,7 @@ exports.postListsAll = async(req) => {
         limit,
         offset,
         order: [
-            ['created_at','ASC']
+            ['createdAt','ASC']
         ],
         include: [{
             model : Hashtag,
@@ -72,7 +72,7 @@ exports.postUserListsAll = async(req) => {
         limit,
         offset,
         order: [
-            ['created_at','ASC']
+            ['createdAt','ASC']
         ],
         include: [{
             model : Hashtag

@@ -17,13 +17,10 @@ class Post extends Sequelize.Model{
                 allowNull : false
             },
             createdAt: {
-                // Order by time, ASC, DESC를 위해 카멜케이스가 아닌 스네이크 케이스로 필드 정의
-                field: 'created_at',
                 type: Sequelize.DATE,
                 allowNull : false
             },
             updatedAt: {
-                field: 'updated_at',
                 type: Sequelize.DATE,
                 allowNull : false
             },
