@@ -61,7 +61,7 @@ router.post('/dedicate-email',async(req,res,next) => {
  */
 router.post('/dedicate-nickname',async(req,res,next) => {
     try{
-        const result = await component.authDedicateEmail(req);
+        const result = await component.authDedicateNickname(req);
         return res.status(200).json(
             util.commonMessage(result)
         )

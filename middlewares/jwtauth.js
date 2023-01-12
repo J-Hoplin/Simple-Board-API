@@ -32,7 +32,7 @@ exports.verifyToken = (req,res,next) => {
          * docs : https://github.com/auth0/node-jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback
          */
         req.decoded = jwt.verify(
-            req.headers.authorization,
+            req.headers.authorization.split(" ")[1],
             process.env.JWT_SECRET
         )
         next();
@@ -95,7 +95,7 @@ exports.generateToken = async (req,res,next) => {
 exports.refreshTokenPreprocess = async (req,res,next) => {
     try{
         const payload = jwt.verify(
-            req.headers.authorization,
+            req.headers.authorization.split(" ")[1],
             process.env.JWT_SECRET,
         )
         const refreshToken = await redisClient.get(payload.id);
@@ -109,7 +109,7 @@ exports.refreshTokenPreprocess = async (req,res,next) => {
         if(err.name === 'TokenExpiredError'){
             // Extract JWT token with ignoring time expiration
             const payload = jwt.verify(
-                req.headers.authorization,
+                req.headers.authorization.split(" ")[1],
                 process.env.JWT_SECRET,
                 {
                     ignoreExpiration : true

@@ -16,6 +16,17 @@ class Post extends Sequelize.Model{
                 type : Sequelize.TEXT,
                 allowNull : false
             },
+            createdAt: {
+                // Order by time, ASC, DESC를 위해 카멜케이스가 아닌 스네이크 케이스로 필드 정의
+                field: 'created_at',
+                type: Sequelize.DATE,
+                allowNull : false
+            },
+            updatedAt: {
+                field: 'updated_at',
+                type: Sequelize.DATE,
+                allowNull : false
+            },
             type : {
                 type : Sequelize.ENUM,
                 values : ["free","notice","admin"],
@@ -25,7 +36,7 @@ class Post extends Sequelize.Model{
             sequelize,
             modelName : 'Post',
             tableName : 'posts',
-            timestamps : false,
+            timestamps : true,
             paranoid : false,
             underscored : false,
             charset : 'utf8',

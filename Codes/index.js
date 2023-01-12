@@ -31,6 +31,7 @@ exports.ETERNAL_QUERY_ERROR = format("Query run failed. Check Database Connectio
 exports.USER_ALREADY_EXIST = format("User already exist",400)
 exports.USER_FAIL_ENROLL = format("Fail to enroll user",)
 exports.USER_NOT_EXIST = format("User not exist",400)
+exports.USER_NICKNAME_OR_EMAIL_EXIST = format("User nickname or email already exist",400);
 exports.USER_PASSWORD_UNMATCHED = format("Password not matched",400)
 exports.USER_WITHDRAW_FAIL = format("Something went wrong while user withdraw",500)
 exports.USER_LEVEL_RANGE_UNAVAILABLE = format("User level range unavailable",400)
@@ -42,4 +43,4 @@ exports.POST_INVALID_AUTHOR = format("Invalid post's author ID",400);
 // JWT Related Message
 exports.JWT_GENERATE_SUCCESS = format(SUCCESS)
 exports.JWT_TOKEN_EXPIRE = format("Token expired",419)
-exports.JWT_INVALID_TOKEN = format("Invalid token",419)
+exports.JWT_INVALID_TOKEN = format("Invalid token",403)

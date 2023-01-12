@@ -11,13 +11,26 @@ const router = Router();
 const adminOnly = ['admin']
 const adminNuser = ['admin','user']
 
-router.get('/all',async(req,res,next) => {
+router.get('/list',async(req,res,next) => {
     try{
         const posts = await component.postListsAll(req);
         return res.status(200).json(
             util.messageWithData("OK",posts)
         )
     }catch(err){
+        console.error(err)
+        next(err)
+    }
+})
+
+router.get('/list/:id',async(req,res,next) => {
+    try{
+        const posts = await component.postUserListsAll(req);
+        return res.status(200).json(
+            util.messageWithData("OK",posts)
+        )
+    }catch(err){
+        console.error(err)
         next(err)
     }
 })
@@ -29,6 +42,7 @@ router.get('/:id',async(req,res,next) => {
             util.messageWithData("OK",postId)
         )
     }catch(err){
+        console.error(err)
         next(err)
     }
 })
@@ -40,17 +54,19 @@ router.post('/',verifyToken,checkUserRole(adminNuser),async(req,res,next) => {
             util.messageWithData("OK",postId)
         )
     }catch(err){
+        console.error(err)
         next(err)
     }
 })
 
 router.put('/edit',verifyToken,checkUserRole(adminNuser),async(req,res,next) => {
     try{
-        const result = await component.postUpdate(req);
+        const result = await component.postEdit(req);
         return res.status(200).json(
             util.messageWithData("OK",result)
         )
     }catch(err){
+        console.error(err)
         next(err);
     }
 })
@@ -62,6 +78,7 @@ router.delete('/delete',verifyToken,checkUserRole(adminNuser),async(req,res,next
             util.commonMessage("OK")
         )
     }catch(err){
+        console.error(err)
         next(err);
     }
 })

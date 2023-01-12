@@ -32,7 +32,7 @@ exports.authJoin = async (req) => {
         }
     })
     if(user){
-        throw new BadRequest(Codes.USER_ALREADY_EXIST)
+        throw new BadRequest(Codes.USER_NICKNAME_OR_EMAIL_EXIST)
     }
     const hashpwd = await bcrypt.hash(password,parseInt(process.env.ENCRYPT_COUNT));
     try{
@@ -88,7 +88,7 @@ exports.authDedicateNickname = async(req) => {
     } = req.body
     const checkUserExist = await User.findOne({
         where : {
-            email
+            nickname
         }
     })
     return Boolean(checkUserExist)

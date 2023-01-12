@@ -16,7 +16,7 @@ const adminNuser = ['admin','user']
  * Get user information
  */
 
-router.get('/info',verifyToken,checkUserRole(adminNuser),async(req,res,next) => {
+router.get('/info/:id',verifyToken,async(req,res,next) => {
     try{
         const user = await component.userInfo(req);
         return res.status(200).send(
@@ -32,7 +32,7 @@ router.get('/info',verifyToken,checkUserRole(adminNuser),async(req,res,next) => 
  * 
  * Only admin
  */
-router.get('/list',verifyToken,checkUserRole(adminOnly),async (req,res,next) => {
+router.get('/list',verifyToken,async (req,res,next) => {
     try{
         const users = await component.userList(req);
         return res.status(200).send(
