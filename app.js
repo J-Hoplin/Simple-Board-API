@@ -3,12 +3,18 @@ const logger = require('morgan')
 const cors = require('cors')
 const util = require('./util')
 const dotenv = require('dotenv')
+const YAML = require('yamljs')
+const swaggerUI = require('swagger-ui-express')
+const path = require('path')
 
 dotenv.config()
 // Router point
-const api = require('./routes')
+const api = require('./api')
 const app = express();
 app.set('port',process.env.PORT || 6000);
+
+// Load Swagger Spec
+const swaggerSpec = YAML.load(path.join(__dirname,'/docs/docs.yml'));
 
 // Sequelize
 const { sequelize } = require('./models')
@@ -36,13 +42,14 @@ app.use(
     : logger('combined')
 )
 
+app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swaggerSpec))
 // Enroll router
 app.use('/api',api)
 
 // Ping
 app.get('/ping',(req,res) => {
     return res.status(200).json(
-        util.commonMessage("OK")
+        util.commonMessage("pong")
     )
 })
 

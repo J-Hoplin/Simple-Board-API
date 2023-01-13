@@ -16,6 +16,14 @@ class Post extends Sequelize.Model{
                 type : Sequelize.TEXT,
                 allowNull : false
             },
+            createdAt: {
+                type: Sequelize.DATE,
+                allowNull : false
+            },
+            updatedAt: {
+                type: Sequelize.DATE,
+                allowNull : false
+            },
             type : {
                 type : Sequelize.ENUM,
                 values : ["free","notice","admin"],
@@ -25,7 +33,7 @@ class Post extends Sequelize.Model{
             sequelize,
             modelName : 'Post',
             tableName : 'posts',
-            timestamps : false,
+            timestamps : true,
             paranoid : false,
             underscored : false,
             charset : 'utf8',
