@@ -11,12 +11,15 @@ const {v4} = require('uuid')
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize')
 
+const roles = User.getAttributes().role.values
+
 exports.authJoin = async (req) => {
-    const {
+    let {
         password,
         email,
         nickname,
         gender,
+        role,
         birth
     } = req.body
     const user = await User.findOne({
@@ -34,6 +37,7 @@ exports.authJoin = async (req) => {
     if(user){
         throw new BadRequest(Codes.USER_NICKNAME_OR_EMAIL_EXIST)
     }
+    role = roles.includes(role) ? role : 'user';
     const hashpwd = await bcrypt.hash(password,parseInt(process.env.ENCRYPT_COUNT));
     try{
         return await User.create({
@@ -41,7 +45,7 @@ exports.authJoin = async (req) => {
             password : hashpwd,
             email,
             nickname,
-            role : "user",
+            role,
             level : 1,
             gender,
             birth
@@ -122,7 +126,8 @@ exports.authWithdraw = async(req) => {
 
 exports.authToken = async(req) => {
     const {
-        id
+        id,
+        password
     } = req.body
     const user = await User.findOne({
         where : {
@@ -131,6 +136,10 @@ exports.authToken = async(req) => {
     })
     if(!user){
         throw new BadRequest(Codes.USER_NOT_EXIST)
+    }
+    // Check password matching
+    if(!await bcrypt.compare(password,user.password)){
+        throw new BadRequest(Codes.USER_PASSWORD_UNMATCHED);
     }
     return user
 }

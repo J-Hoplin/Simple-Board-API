@@ -52,6 +52,7 @@ exports.verifyToken = (req,res,next) => {
 
 exports.generateToken = async (req,res,next) => {
     const id = req.user.id
+    const password = req.user
     const idExist = await User.findOne({
         where : {
             id

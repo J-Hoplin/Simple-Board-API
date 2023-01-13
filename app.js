@@ -49,7 +49,7 @@ app.use('/api',api)
 // Ping
 app.get('/ping',(req,res) => {
     return res.status(200).json(
-        util.commonMessage("OK")
+        util.commonMessage("pong")
     )
 })
 

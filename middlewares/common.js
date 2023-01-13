@@ -47,3 +47,17 @@ exports.checkUserRole = (roles) => {
         next();
     }
 }
+
+exports.embedPostID = (req,res,next) => {
+    const {
+        id
+    } = req.params
+    // If id null
+    if(!id){
+        return res.status(Codes.POST_ID_NOT_GIVEN.code).json(
+            commonMessage(Codes.POST_ID_NOT_GIVEN.message)
+        )
+    }
+    req.postId = id;
+    next();
+}

@@ -15,7 +15,7 @@ class Comment extends Sequelize.Model{
             sequelize,
             modelName : 'Comment',
             tableName : 'comments',
-            timestamps : false,
+            timestamps : true,
             paranoid : false,
             underscored : false,
             charset : 'utf8',
@@ -26,6 +26,11 @@ class Comment extends Sequelize.Model{
     static associate(db){
         db.Comment.belongsTo(db.Post,{
             foreignKey : 'postId',
+            targetKey : 'id',
+            onDelete: "cascade"
+        })
+        db.Comment.belongsTo(db.User,{
+            foreignKey : 'authorId',
             targetKey : 'id',
             onDelete: "cascade"
         })

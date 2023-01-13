@@ -39,6 +39,10 @@ exports.USER_LEVEL_RANGE_UNAVAILABLE = format("User level range unavailable",400
 // Posts
 exports.POST_NOT_FOUND = format("Post with ID not found",400);
 exports.POST_INVALID_AUTHOR = format("Invalid post's author ID",400);
+exports.POST_ID_NOT_GIVEN = format("Post ID not given",400);
+
+//Comments
+exports.COMMENT_NOT_FOUND = format("Comment not found",400);
 
 // JWT Related Message
 exports.JWT_GENERATE_SUCCESS = format(SUCCESS)

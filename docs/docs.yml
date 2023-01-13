@@ -5,7 +5,7 @@ info:
   version: '1.0'
   description: "Board api using express.js"
   contact:
-    name: "Contact to my E-mail or make issue to my github"
+    name: "J-hoplin1"
     email: "jhoplin7259@gmail.com"
     url: "https://github.com/J-hoplin1/Board-API"
 servers:
@@ -85,6 +85,20 @@ components:
           type: string
           example: "Post not exist"
 
+    "400-post-id-not-given":
+      type: object
+      properties:
+        msg:
+          type: string
+          example: "Post ID not given"
+    
+    "400-comment-not-found":
+      type: object
+      properties:
+        msg:
+          type: string
+          example: "Comment not found"
+
     "401":
       type: object
       properties:
@@ -146,6 +160,10 @@ tags:
     description: Post Management API
   - name: /api/v1/user
     description: User API
+  - name: /api/v1/post/comment
+    description: Comment Management API
+  - name: Admin Only
+    description: APIs that user with role 'admin' can only use
 paths:
   /ping:
     get:
@@ -158,7 +176,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/200'
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: pong
 
   /api/v1/auth/join:
     post:
@@ -186,6 +208,11 @@ paths:
                   enum:
                     - male
                     - female
+                role:
+                  type: string
+                  enum:
+                    - user
+                    - admin
                 birth:
                   type: string
                   example: 2023-01-12
@@ -493,6 +520,11 @@ paths:
                 id:
                   type: string
                   example: "d11d7d6a-9506-4df3-875f-a514d093dccb"
+                  description: User id
+                password:
+                  type: string
+                  example: "password"
+                  description: User password
       responses:
         "200":
           description: "Success to login"
@@ -505,11 +537,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: "User not exist"
+                oneOf:
+                  - $ref: "#/components/schemas/400-user-not-exist"
+                  - $ref: "#/components/schemas/400-user-password-unmatched"
         
         "401":
           description: "Unauthorized user or request"
@@ -598,13 +628,91 @@ paths:
   
 
   # User API
-  /api/v1/user/info/{id}:
+
+  /api/v1/user/get:
+    get:
+      tags:
+        - /api/v1/user
+      summary: Get user's ID with nickname
+      parameters:
+        - in: query
+          name: nickname
+          required: true
+          schema:
+            type: string
+            example: nickname
+          description: User Nickname
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "OK"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: c075ac18-b583-4535-b3e4-cf1370d1143a
+        "400":
+          description: "User not exist"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "User not exist"
+        "401":
+          description: "Unauthorized user or request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/401"
+
+        "403":
+          description: "API Blocked"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/403"
+                  - $ref: "#/components/schemas/403-blocked"
+                  - $ref: "#/components/schemas/403-token-invalid"
+        
+        "410":
+          description: "API deprecated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/410"
+        
+        "419":
+          description: "Token expired"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/419"
+
+        "500":
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500'
+  /api/v1/user/info:
     get:
       tags:
         - /api/v1/user
       summary: Get user information by ID
       parameters:
-        - in: path
+        - in: query
           name: id
           required: true
           schema:
@@ -707,13 +815,13 @@ paths:
     get:
       tags:
         - /api/v1/user
-      summary: Get user list. Admin only
+      summary: Get user list.
       parameters:
         - in: query
           name: offset
           schema:
             type: integer
-            default: 1
+            default: 0
           description: Number of item to skip before collecting result
         - in: query
           name: limit
@@ -819,6 +927,7 @@ paths:
     patch:
       tags:
         - /api/v1/user
+        - Admin Only
       summary: Level up user's level. Admin only
       requestBody:
         required: true
@@ -881,6 +990,7 @@ paths:
     patch:
       tags:
         - /api/v1/user
+        - Admin Only
       summary: Level down user's level. Admin only
       requestBody:
         required: true
@@ -1099,7 +1209,7 @@ paths:
           name: offset
           schema:
             type: integer
-            default: 1
+            default: 0
           description: Number of item to skip before collecting result
       responses:
         "200":
@@ -1164,6 +1274,31 @@ paths:
                                   HashtagId:
                                     type: integer
                                     example: 1
+                        Comments:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                example: 1
+                              content:
+                                type: string
+                                example: content of comment
+                              createdAt:
+                                type: string
+                                example: 2023-01-12T07:41:24.000Z
+                              updatedAt:
+                                type: string
+                                example: 2023-01-12T07:41:24.000Z
+                              authorId:
+                                type: string
+                                example: 77b29c78-82d9-4415-854c-3ca0cf3bbcff
+                              postId:
+                                type: string
+                                example: "9304857a-0803-496a-b831-ca8509ee126b"
+                          
+                            
         "403":
           description: "API Blocked"
           content:
@@ -1202,7 +1337,7 @@ paths:
           name: offset
           schema:
             type: integer
-            default: 1
+            default: 0
           description: Number of item to skip before collecting result
         - in: path
           name: id
@@ -1562,6 +1697,273 @@ paths:
               schema:
                 oneOf:
                   - $ref: "#/components/schemas/400-post-not-exist"
+
+        "403":
+          description: "API Blocked"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/403"
+                  - $ref: "#/components/schemas/403-blocked"
+        "410":
+          description: "API deprecated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/410"
+        
+        "500":
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500'
+  
+  /api/v1/post/{id}/comment/:
+    get:
+      tags:
+        - /api/v1/post/comment
+      summary: Get post's specific informations by createdAt, DESC
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            example: "9304857a-0803-496a-b831-ca8509ee126b"
+          description: Post's ID
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg: 
+                    type: string
+                    example: "OK"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        content:
+                          type: string
+                          example: content of comment
+                        createdAt:
+                          type: string
+                          example: 2023-01-12T07:41:24.000Z
+                        updatedAt:
+                          type: string
+                          example: 2023-01-12T07:41:24.000Z
+                        authorId:
+                          type: string
+                          example: 77b29c78-82d9-4415-854c-3ca0cf3bbcff
+                        postId:
+                          type: string
+                          example: "9304857a-0803-496a-b831-ca8509ee126b"
+        
+        "400":
+          description: "Post not exist"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/400-post-not-exist"
+
+        "403":
+          description: "API Blocked"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/403"
+                  - $ref: "#/components/schemas/403-blocked"
+        "410":
+          description: "API deprecated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/410"
+        
+        "500":
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500'
+  
+    post:
+      tags:
+        - /api/v1/post/comment
+      summary: Create new comment about post
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            example: "9304857a-0803-496a-b831-ca8509ee126b"
+          description: Post's ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                authorId:
+                  type: string
+                  example: User's ID
+                content:
+                  type: string
+                  example: Comment content
+      responses:
+        "200":
+          description: "Success to add comment"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+        "400":
+          description: "Post not exist"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/400-post-not-exist"
+                  - $ref: "#/components/schemas/400-comment-not-found"
+
+        "403":
+          description: "API Blocked"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/403"
+                  - $ref: "#/components/schemas/403-blocked"
+        "410":
+          description: "API deprecated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/410"
+        
+        "500":
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500'
+  
+    patch:
+      tags:
+          - /api/v1/post/comment
+      summary: Update comment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            example: "9304857a-0803-496a-b831-ca8509ee126b"
+          description: Post's ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: Comment's ID
+                  description: Comment's ID
+                content:
+                  type: string
+                  example: content
+                  description: Content to udpate
+      responses:
+        "200":
+          description: "Success to update comment"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+        "400":
+          description: "Post not exist"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/400-post-not-exist"
+                  - $ref: "#/components/schemas/400-comment-not-found"
+
+        "403":
+          description: "API Blocked"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/403"
+                  - $ref: "#/components/schemas/403-blocked"
+        "410":
+          description: "API deprecated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/410"
+        
+        "500":
+          description: "Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500'
+
+    delete:
+      tags:
+          - /api/v1/post/comment
+      summary: Delete comment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            example: "9304857a-0803-496a-b831-ca8509ee126b"
+          description: Post's ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: Comment's ID
+                  description: Comment's ID
+      responses:
+        "200":
+          description: "Success to update comment"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/200'
+        "400":
+          description: "Post not exist"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/400-post-not-exist"
+                  - $ref: "#/components/schemas/400-comment-not-found"
 
         "403":
           description: "API Blocked"

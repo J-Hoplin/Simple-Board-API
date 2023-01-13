@@ -2,7 +2,8 @@ const Router = require('express').Router
 // JWT middlewares
 const {
     verifyToken,
-    checkUserRole
+    checkUserRole,
+    deprecated
 } = require('../../../middlewares')
 const component = require('./component')
 const util = require('../../../util')
@@ -16,7 +17,18 @@ const adminNuser = ['admin','user']
  * Get user information
  */
 
-router.get('/info/:id',verifyToken,async(req,res,next) => {
+router.get('/get',async(req,res,next) => {
+    try{
+        const user = await component.userGetIDWithNickname(req);
+        return res.status(200).send(
+            util.messageWithData("OK",user)
+        )
+    }catch(err){
+        next(err);
+    }
+})
+
+router.get('/info',verifyToken,checkUserRole(adminNuser),async(req,res,next) => {
     try{
         const user = await component.userInfo(req);
         return res.status(200).send(
@@ -32,7 +44,7 @@ router.get('/info/:id',verifyToken,async(req,res,next) => {
  * 
  * Only admin
  */
-router.get('/list',verifyToken,async (req,res,next) => {
+router.get('/list',verifyToken,checkUserRole(adminNuser),async (req,res,next) => {
     try{
         const users = await component.userList(req);
         return res.status(200).send(
@@ -85,7 +97,7 @@ router.put('/edit',verifyToken,checkUserRole(adminNuser),async(req,res,next) => 
     }
 })
 
-router.post('/checkpassword',verifyToken,checkUserRole(adminNuser),async(req,res,next) => {
+router.post('/checkpassword',deprecated,verifyToken,checkUserRole(adminNuser),async(req,res,next) => {
     try{
         const result = await component.userCheckPassword(req)
         return res.status(200).json(

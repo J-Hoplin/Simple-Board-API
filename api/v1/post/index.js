@@ -1,15 +1,16 @@
 const Router = require('express').Router
-const {
-    verifyToken,
-    checkUserRole
-} = require('../../../middlewares')
+const { verifyToken,checkUserRole,embedPostID } = require('../../../middlewares')
 const component = require('./component')
 const util = require('../../../util')
+// Comment router
+const comment = require('./comment')
 
 
 const router = Router();
 const adminOnly = ['admin']
 const adminNuser = ['admin','user']
+
+router.use('/:id/comment',embedPostID,comment)
 
 router.get('/list',async(req,res,next) => {
     try{

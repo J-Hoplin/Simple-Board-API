@@ -8,6 +8,7 @@ const {
     User,
     Post,
     Hashtag,
+    Comment,
     PostHashtag
 } = require('../../../models')
 const util = require('../../../util')
@@ -38,8 +39,8 @@ exports.postListsAll = async(req) => {
 
     // Value from ENV variable is type of string
     // Require to convert to integer
-    limit = limit || parseInt(process.env.DEFAULT_LIMIT);
-    offset = offset || parseInt(process.env.DEFAULT_OFFSET);
+    limit = parseInt(limit) || parseInt(process.env.DEFAULT_LIMIT);
+    offset = parseInt(offset) || parseInt(process.env.DEFAULT_OFFSET);
 
     const posts = await Post.findAll({
         attributes: ['id','title','authorId','type','createdAt'],
@@ -48,10 +49,16 @@ exports.postListsAll = async(req) => {
         order: [
             ['createdAt','ASC']
         ],
-        include: [{
-            model : Hashtag,
-        }]
+        include: [
+            {
+                model : Hashtag
+            },
+            {
+                model : Comment
+            }
+        ]
     });
+    console.log(posts)
     return posts
 }
 
@@ -64,22 +71,25 @@ exports.postUserListsAll = async(req) => {
         id
     } = req.params
 
-    limit = limit || parseInt(process.env.DEFAULT_LIMIT);
-    offset = offset || parseInt(process.env.DEFAULT_OFFSET);
-
+    limit = parseInt(limit) || parseInt(process.env.DEFAULT_LIMIT);
+    offset = parseInt(offset) || parseInt(process.env.DEFAULT_OFFSET);
+    console.log(`${limit} ${offset}`)
     const posts = await Post.findAll({
         attributes: ['id','title','authorId','type','createdAt'],
-        limit,
-        offset,
+        where: {
+            authorId : id
+        },
         order: [
             ['createdAt','ASC']
         ],
-        include: [{
-            model : Hashtag
-        }],
-        where: {
-            authorId: id
-        }
+        include: [
+            {
+                model : Hashtag
+            },
+            {
+                model : Comment
+            }
+        ]
     });
     return posts;
 }
@@ -93,9 +103,14 @@ exports.postId = async(req) => {
         where : {
             id
         },
-        include: [{
-            model : Hashtag
-        }]
+        include: [
+            {
+                model : Hashtag
+            },
+            {
+                model : Comment
+            }
+        ]
     })
     // If post not found
     if(!post){
@@ -114,6 +129,8 @@ exports.post = async(req) => {
     const {
         id
     } = req.decoded
+
+    console.log(req.decoded)
 
     // Check user exist
     const checkUser = await User.findOne({
@@ -141,8 +158,12 @@ exports.post = async(req) => {
     // Check post type. If it's invalid, set default as free
     // make type as lowercase string
     type = type.toLowerCase();
-    if(!post_types.includes()){
+    if(!post_types.includes(type)){
         type = 'free';
+    }
+    // notice, admin type is only available to admin role user
+    if((type !== 'free') && (checkUser.role !== 'admin')){
+        throw new BadRequest(Codes.FORBIDDEN_API)
     }
 
     // Create Post

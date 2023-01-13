@@ -19,10 +19,26 @@ const checkUserLevelAvailable = (level) => {
     return userLevels.includes(level)
 }
 
+exports.userGetIDWithNickname = async(req) => {
+    const {
+        nickname
+    } = req.query
+    const user = await User.findOne({
+        attributes : ['id'],
+        where : {
+            nickname
+        }
+    })
+    if(!user){
+        throw new BadRequest(Codes.USER_NOT_EXIST)
+    }
+    return user;
+}
+
 exports.userInfo = async(req) => {
     const {
         id
-    } = req.params
+    } = req.query
     const user = await User.findOne({
         where : {
             id
@@ -49,8 +65,8 @@ exports.userList = async(req) => {
         limit
     } = req.query;
     // If offset or limit not typed
-    limit = limit || parseInt(process.env.DEFAULT_LIMIT);
-    offset = offset || parseInt(process.env.DEFAULT_OFFSET);
+    limit = parseInt(limit) || parseInt(process.env.DEFAULT_LIMIT);
+    offset = parseInt(offset) || parseInt(process.env.DEFAULT_OFFSET);
     const users = await User.findAll({
         limit,
         offset
