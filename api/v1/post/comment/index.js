@@ -8,7 +8,7 @@ const adminOnly = ['admin']
 const adminNuser = ['admin','user']
 
 router.route('/')
-.get(verifyToken,checkUserRole(adminNuser),async(req,res,next) => {
+.get(async(req,res,next) => {
     try{
         const comments = await component.commentGet(req);
         return res.status(200).json(

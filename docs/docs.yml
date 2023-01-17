@@ -1325,7 +1325,7 @@ paths:
     get:
       tags:
         - /api/v1/post
-      summary: Get all of posts by user, order by created time, ASC
+      summary: Get user's post list
       parameters:
         - in: query
           name: limit
