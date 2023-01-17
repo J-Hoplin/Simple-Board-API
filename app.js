@@ -7,7 +7,9 @@ const YAML = require('yamljs')
 const swaggerUI = require('swagger-ui-express')
 const path = require('path')
 
-dotenv.config()
+dotenv.config({
+    path : './config/.env'
+})
 // Router point
 const api = require('./api')
 const app = express();

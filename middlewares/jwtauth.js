@@ -1,11 +1,16 @@
 const jwt = require('jsonwebtoken');
 const { Codes, commonMessage, messageWithToken, convertToSecond } = require('../util')
 const redis = require('redis')
+const { host,port } = require("../config/redisconfig.json")
 const {
     User
 } = require('../models')
 
 let redisClient = redis.createClient({
+    socket : {
+        host,
+        port
+    },
     legacyMode : true
 })
 
