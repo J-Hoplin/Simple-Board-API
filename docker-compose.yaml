@@ -1,0 +1,38 @@
+version: '3.7'
+services:
+  api:
+    build: .
+    image: boardapi
+    ports:
+      - "6000:6000"
+      - "4000:4000"
+    restart: unless-stopped
+    depends_on:
+      - db
+      - redis
+    networks:
+      - api-network
+  db:
+    image: mysql
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=password1234!
+      - MYSQL_ROOT_HOST=%
+    networks:
+      - api-network
+    volumes:
+      - board-api-volume:/var/lib/mysql
+  redis:
+    image: arm64v8/redis
+    ports:
+      - "6379:6379"
+    networks:
+      - api-network
+networks:
+  api-network:
+    driver: bridge
+volumes:
+  board-api-volume:
+      

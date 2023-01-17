@@ -98,6 +98,21 @@ exports.generateToken = async (req,res,next) => {
     )
 }
 
+exports.logout = async(req,res,next) => {
+    try{
+        const {
+            id
+        } = req.decoded
+        // Delete user id key in redis
+        await redisClient.del(id)
+        return res.status(Codes.OK.code).json(
+            commonMessage(Codes.OK.message)
+        )
+    }catch(err){
+        next(err)
+    }
+}
+
 exports.refreshTokenPreprocess = async (req,res,next) => {
     try{
         const payload = jwt.verify(

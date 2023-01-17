@@ -15,6 +15,7 @@ router.route('/')
             util.messageWithData("OK",comments)
         )
     }catch(err){
+        console.error(err)
         next(err);
     }
 })
@@ -25,6 +26,7 @@ router.route('/')
             util.commonMessage("OK")
         )
     }catch(err){
+        console.error(err)
         next(err);
     }
 })
@@ -35,6 +37,7 @@ router.route('/')
             util.commonMessage("OK")
         )
     }catch(err){
+        console.error(err)
         next(err)
     }
 })
@@ -45,6 +48,7 @@ router.route('/')
             util.commonMessage("OK")
         )
     }catch(err){
+        console.error(err)
         next(err)
     }
 })
