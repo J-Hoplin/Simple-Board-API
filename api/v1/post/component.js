@@ -17,6 +17,15 @@ const {v4} = require('uuid')
 
 const post_types = Post.getAttributes().type.values.map(x => x)
 
+const checkActionScope = async (userid,postid) => {
+    const postAuthor = await Post.findByPk(postid)
+    const user = await User.findByPk(userid)
+    // If user id and post author id match or if user is admin -> true
+    return userid === postAuthor.authorId || user.role === 'admin'
+    ? true
+    : false
+}
+
 const checkAuthorMatch = async(id,postId) => {
     const postInfo = await Post.findOne({
         attributes : ['authorId'],
@@ -58,7 +67,6 @@ exports.postListsAll = async(req) => {
             }
         ]
     });
-    console.log(posts)
     return posts
 }
 
@@ -73,7 +81,6 @@ exports.postUserListsAll = async(req) => {
 
     limit = parseInt(limit) || parseInt(process.env.DEFAULT_LIMIT);
     offset = parseInt(offset) || parseInt(process.env.DEFAULT_OFFSET);
-    console.log(`${limit} ${offset}`)
     const posts = await Post.findAll({
         attributes: ['id','title','authorId','type','createdAt'],
         where: {
@@ -98,7 +105,6 @@ exports.postId = async(req) => {
     const {
         id
     } = req.params
-    console.log(id)
     const post = await Post.findOne({
         where : {
             id
@@ -129,8 +135,6 @@ exports.post = async(req) => {
     const {
         id
     } = req.decoded
-
-    console.log(req.decoded)
 
     // Check user exist
     const checkUser = await User.findOne({
@@ -237,6 +241,13 @@ exports.postEdit = async (req) => {
         content,
         hashtags
     } = req.body
+    const {
+        id:userId,
+    } = req.decoded
+    if(!await checkActionScope(userId,postId)){
+        throw new BadRequest(Codes.FORBIDDEN_API)
+    }
+
     hashtags = hashtags || new Array();
     const postInfo = await Post.findOne({
         attributes : ['title','content'],
@@ -311,12 +322,20 @@ exports.postEdit = async (req) => {
 
 exports.postDelete = async (req) => {
     const {
-        id
+        id : postId
     } = req.body;
+
+    const {
+        id:userId,
+    } = req.decoded
+
+    if(!await checkActionScope(userId,postId)){
+        throw new BadRequest(Codes.FORBIDDEN_API)
+    }
 
     const checkPost = await Post.findOne({
         where : {
-            id
+            postId
         }
     })
 
@@ -327,7 +346,7 @@ exports.postDelete = async (req) => {
 
     return await Post.destroy({
         where : {
-            id
+            postId
         }
     })
 }
