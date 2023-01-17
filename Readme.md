@@ -77,7 +77,8 @@ Simple RESTful API for Board Management with functions below
     ~~~
     docker compose up -d
     ~~~
-    Connect to swagger document : `localhost:4000/api-docs` 
+    - Please wait a moment until API container connect to database completely
+    - Connect to swagger document : `localhost:4000/api-docs` 
 - Clear Environment
     ~~~
     docker compose down
