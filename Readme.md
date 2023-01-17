@@ -155,6 +155,17 @@ Simple RESTful API for Board Management with functions below
     - Do not change  `host` if you use API with embedded docker, docker-compose in this project
 - Redis connection management : redisconfig.json
     - Basically this project use redis without password. If you want to set password or use redis replication, you need to change redis connection code located in `middlewares/jwtauth.js`
+    - If you are using PC with `x86 / amd64` architecture CPU, please change redis image described in `docker-compose.yaml` to `redis:bullseye`
+        ~~~yaml
+        ...
+
+         redis:
+           image: redis:bullseye
+           ports:
+             - "6379:6379"
+
+        ...
+        ~~~
 - MongoDB connection management : mongoconfig.json
 
 ## TODOs
