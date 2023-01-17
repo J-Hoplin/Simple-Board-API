@@ -19,9 +19,9 @@ Simple RESTful API for Board Management with functions below
 5. [ERD](#erd)
 6. [API Architecture](#architecture)
 7. [Used modules](#used-node-modules)
-8. [TODOs](#todos)
-9. [API Endpoints](#endpoints)
-10. [API Document](#api-documentation)
+8. [API Endpoints](#endpoints)
+9. [API Document](#api-documentation)
+10. [TODOs](#todos)
 ***
 ## Development Tools
 - IDE
@@ -109,27 +109,6 @@ Simple RESTful API for Board Management with functions below
 |yamljs|Swagger doc, yaml dependency|
 |mongoose|MongoDB Connection|
 
-## TODOs
-
-- [ ] Merge Mongo DB applied version
-
-- [ ] Set Proxy : Nginx
-
-- [ ] Search API
-
-- [ ] Optimization, Refactoring
-
-- [ ] Service re-implement to Spring Boot
-
-- [ ] Seperate swagger by router
-
-- [ ] Apply PM2 for multi-thread operation
-
-- [ ] Change logger to Winston
-
-- [ ] Database Migration : Maria DB
-
-- [ ] Test Code with Jest
 ## Endpoints
 
 ### Basic API : /
@@ -174,3 +153,25 @@ Simple RESTful API for Board Management with functions below
 - Redis connection management : redisconfig.json
     - Basically this project use redis without password. If you want to set password or use redis replication, you need to change redis connection code located in `middlewares/jwtauth.js`
 - MongoDB connection management : mongoconfig.json
+
+## TODOs
+
+- [ ] Merge Mongo DB applied version
+
+- [ ] Set Proxy : Nginx
+
+- [ ] Search API
+
+- [ ] Optimization, Refactoring
+
+- [ ] Service re-implement to Spring Boot
+
+- [ ] Seperate swagger by router
+
+- [ ] Apply PM2 for multi-thread operation
+
+- [ ] Change logger to Winston
+
+- [ ] Database Migration : Maria DB
+
+- [ ] Test Code with Jest
