@@ -58,7 +58,7 @@ Simple RESTful API for Board Management with functions below
 
 ### Without using Docker-Compose
 - This script will build same environment as described in `docker-compose.yaml`
-- Script exist in [`/pure-docker-env` directory](./pure-docker-env)
+- Script located in [`/pure-docker-env` directory](./pure-docker-env)
 - Initiate API Environment
     ~~~
     cd pure-docker-env
