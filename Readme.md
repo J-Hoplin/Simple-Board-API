@@ -65,6 +65,7 @@ Simple RESTful API for Board Management with functions below
 
     bash init.sh
     ~~~
+    Connect to swagger document : `localhost:4000/api-docs` 
 - Clear Environment
     ~~~
     cd pure-docker-env
@@ -76,11 +77,11 @@ Simple RESTful API for Board Management with functions below
     ~~~
     docker compose up -d
     ~~~
+    Connect to swagger document : `localhost:4000/api-docs` 
 - Clear Environment
     ~~~
     docker compose down
     ~~~
-
 ## ERD
 
 ![ERD](img/ERD.jpg)
@@ -128,6 +129,7 @@ Simple RESTful API for Board Management with functions below
 ### Swagger
 
 - Swagger API was written in [`/docs` directory](./docs/) with .yaml type
+- Connect to swagger : `localhost:4000/api-docs`
 
 ### Application global environment variable
 
