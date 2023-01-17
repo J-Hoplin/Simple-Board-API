@@ -39,20 +39,16 @@ exports.authJoin = async (req) => {
     }
     role = roles.includes(role) ? role : 'user';
     const hashpwd = await bcrypt.hash(password,parseInt(process.env.ENCRYPT_COUNT));
-    try{
-        return await User.create({
-            id : v4(),
-            password : hashpwd,
-            email,
-            nickname,
-            role,
-            level : 1,
-            gender,
-            birth
-        })
-    }catch(err){
-        throw new QueryFailed(Codes.USER_FAIL_ENROLL);
-    }
+    return await User.create({
+        id : v4(),
+        password : hashpwd,
+        email,
+        nickname,
+        role,
+        level : 1,
+        gender,
+        birth
+    })
 }
 
 exports.authLogin = async (req) => {
@@ -113,21 +109,16 @@ exports.authWithdraw = async(req) => {
     if(!await bcrypt.compare(password,user.password)){
         throw new BadRequest(Codes.USER_PASSWORD_UNMATCHED);
     }
-    try{
-        return await User.destroy({
-            where : {
-                id
-            }
-        })
-    }catch(err){
-        throw new QueryFailed(Codes.USER_WITHDRAW_FAIL);
-    }
+    return await User.destroy({
+        where : {
+            id
+        }
+    })
 }
 
 exports.authToken = async(req) => {
     const {
-        id,
-        password
+        id
     } = req.body
     const user = await User.findOne({
         where : {
@@ -136,10 +127,6 @@ exports.authToken = async(req) => {
     })
     if(!user){
         throw new BadRequest(Codes.USER_NOT_EXIST)
-    }
-    // Check password matching
-    if(!await bcrypt.compare(password,user.password)){
-        throw new BadRequest(Codes.USER_PASSWORD_UNMATCHED);
     }
     return user
 }

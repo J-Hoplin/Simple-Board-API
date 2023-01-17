@@ -24,6 +24,7 @@ router.get('/get',async(req,res,next) => {
             util.messageWithData("OK",user)
         )
     }catch(err){
+        console.error(err)
         next(err);
     }
 })
@@ -35,6 +36,7 @@ router.get('/info',verifyToken,checkUserRole(adminNuser),async(req,res,next) => 
             util.messageWithData("OK",user)
         )
     }catch(err){
+        console.error(err)
         next(err)
     }
 })
@@ -44,13 +46,14 @@ router.get('/info',verifyToken,checkUserRole(adminNuser),async(req,res,next) => 
  * 
  * Only admin
  */
-router.get('/list',verifyToken,checkUserRole(adminNuser),async (req,res,next) => {
+router.get('/list',async (req,res,next) => {
     try{
         const users = await component.userList(req);
         return res.status(200).send(
             util.messageWithData("OK",users)
         )
     }catch(err){
+        console.error(err)
         next(err)
     }
 })
@@ -65,6 +68,7 @@ router.patch('/levelup',verifyToken,checkUserRole(adminOnly),async(req,res,next)
             util.commonMessage("OK")
         )
     }catch(err){
+        console.error(err)
         next(err)
     }
 })
@@ -76,6 +80,7 @@ router.patch('/leveldown',verifyToken,checkUserRole(adminOnly),async (req,res,ne
             util.commonMessage("OK")
         )
     }catch(err){
+        console.error(err)
         next(err)
     }
 })
@@ -93,6 +98,7 @@ router.put('/edit',verifyToken,checkUserRole(adminNuser),async(req,res,next) => 
             util.commonMessage("OK")
         )
     }catch(err){
+        console.error(err)
         next(err)
     }
 })
@@ -104,6 +110,7 @@ router.post('/checkpassword',deprecated,verifyToken,checkUserRole(adminNuser),as
             util.commonMessage(result)
         )
     }catch(err){
+        console.error(err)
         next(err)
     }
 })

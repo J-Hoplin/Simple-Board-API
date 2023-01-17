@@ -21,7 +21,16 @@ exports.deprecated = (req,res) => {
     )
 }
 
-// This should be after verifytoken 
+exports.blockInProduction = (req,res,next) => {
+    if(process.env.MODE==='development'){
+        return next()
+    }
+    return res.status(Codes.ONLY_AVAILABLE_IN_DEVELOPMENT.code).json(
+        commonMessage(Codes.ONLY_AVAILABLE_IN_DEVELOPMENT.message)
+    )
+}
+
+// This should be after verifytoken
 exports.checkUserRole = (roles) => {
     return async (req,res,next) => {
         // req.decoded will be added from verifyJWT middleware 
