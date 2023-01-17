@@ -30,6 +30,7 @@ exports.checkUserRole = (roles) => {
         } = req.decoded
         const user = await User.findOne({
             attributes: ["role"],
+            raw: true,
             where : {
                 id
             }

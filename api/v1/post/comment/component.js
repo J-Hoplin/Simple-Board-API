@@ -2,7 +2,15 @@ const { BadRequest,QueryFailed,LogicError } = require('../../../../Exceptions')
 const Codes = require('../../../../Codes')
 const {Post,Comment,User} = require('../../../../models')
 const util = require('../../../../util')
-const { v4 } = require('uuid')
+
+const checkActionScope = async (userid,commentid) => {
+    const commentAuthor = await Comment.findByPk(commentid)
+    const user = await User.findByPk(userid)
+    // If user id and post author id match or if user is admin -> true
+    return userid === commentAuthor.authorId || user.role === 'admin'
+    ? true
+    : false
+}
 
 /**
  * 
@@ -10,11 +18,7 @@ const { v4 } = require('uuid')
  */
 
 const checkPostExist = async(id) => {
-    const checkPost = await Post.findOne({
-        where : {
-            id
-        }
-    })
+    const checkPost = await Post.findByPk(id)
     if(!checkPost){
         return false
     }
@@ -66,9 +70,12 @@ exports.commentPost = async (req) => {
     const postId = req.postId
     // From body
     const {
-        authorId,
         content
     } = req.body
+
+    const {
+        id:authorId,
+    } = req.decoded
 
     if(!await checkPostExist(postId)){
         throw new BadRequest(Codes.POST_NOT_FOUND)
@@ -92,12 +99,19 @@ exports.commentPatch = async(req) => {
         id:commentId,
         content
     } = req.body
+    const {
+        id:userId,
+    } = req.decoded
+
+    if(!await checkActionScope(userId,commentId)){
+        throw new BadRequest(Codes.FORBIDDEN_API)
+    }
 
     if(!await checkCommentExist(commentId)){
         throw new BadRequest(Codes.COMMENT_NOT_FOUND)
     }
 
-    if(!await checkPostExist(postId)){
+    if(!await checkPostExist(postId,commentId)){
         throw new BadRequest(Codes.POST_NOT_FOUND)
     }
 
@@ -116,7 +130,13 @@ exports.commentDelete = async(req) => {
     const {
         id:commentId,
     } = req.body
+    const {
+        id:userId,
+    } = req.decoded
 
+    if(!await checkActionScope(userId,commentId)){
+        throw new BadRequest(Codes.FORBIDDEN_API)
+    }
 
     if(!await checkCommentExist(commentId)){
         throw new BadRequest(Codes.COMMENT_NOT_FOUND)

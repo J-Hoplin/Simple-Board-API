@@ -202,6 +202,5 @@ exports.userCheckPassword = async (req) => {
     }
     // Verify password
     const pwverify = await bcrypt.compare(password,user.password);
-    console.log(password)
     return pwverify ? true : false
 }

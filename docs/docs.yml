@@ -1817,9 +1817,6 @@ paths:
             schema:
               type: object
               properties:
-                authorId:
-                  type: string
-                  example: User's ID
                 content:
                   type: string
                   example: Comment content
