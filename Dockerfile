@@ -14,5 +14,5 @@ RUN rm -rf node_modules\
 && npm i
 EXPOSE 4000 6000
 
-ENTRYPOINT [ "node" ]
-CMD [ "www.js" ]
+CMD [ "-c","npx sequelize db:create && node www.js" ]
+ENTRYPOINT [ "/bin/bash" ]
