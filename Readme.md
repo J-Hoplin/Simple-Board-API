@@ -8,7 +8,7 @@ Simple RESTful API for Board Management with functions below
 - Comment Management
 - Hashtag by post
 - Search by Hashtag,User,Title
-- Access control according to member level
+- Access control according to member role
 ***
 ## Contents
 
