@@ -8,7 +8,7 @@ Simple RESTful API for Board Management with functions below
 - Comment Management
 - Hashtag by post
 - Search by Hashtag,User,Title
-- Access control according to member level
+- Access control according to member role
 ***
 ## Contents
 
@@ -49,7 +49,7 @@ Simple RESTful API for Board Management with functions below
 ### Least Required
 - [Docker](https://www.docker.com) installed in your PC
 - Linux or Mac OS as Host Machine
-- Not normally supported on Windows(Docker Compose Issue)
+- Not recommend to use Docker-Compose in Windows OS. [Recommend to use script with pure docker containers](#without-using-docker-compose)
 ### Environment Spec
 - Network : Use docker bridge network, docker DNS
 - Volume : Use docker volume
