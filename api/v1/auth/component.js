@@ -1,17 +1,16 @@
 const {
-    BadRequest,
-    QueryFailed
-} = require('../../../Exceptions')
-const Codes = require('../../../Codes')
+    BadRequest
+} = require('../../../Exceptions');
+const Codes = require('../../../Codes');
 // User model
 const {
     User
-} = require('../../../models')
-const {v4} = require('uuid')
-const bcrypt = require('bcrypt')
-const { Op } = require('sequelize')
+} = require('../../../models');
+const { v4 } = require('uuid');
+const bcrypt = require('bcrypt');
+const { Op } = require('sequelize');
 
-const roles = User.getAttributes().role.values
+const roles = User.getAttributes().role.values;
 
 exports.authJoin = async (req) => {
     let {
@@ -21,35 +20,35 @@ exports.authJoin = async (req) => {
         gender,
         role,
         birth
-    } = req.body
+    } = req.body;
     const user = await User.findOne({
-        where : {
-            [Op.or] : [
+        where: {
+            [Op.or]: [
                 {
                     nickname
-                },  
+                },
                 {
                     email
                 }
             ]
         }
-    })
-    if(user){
-        throw new BadRequest(Codes.USER_NICKNAME_OR_EMAIL_EXIST)
+    });
+    if (user) {
+        throw new BadRequest(Codes.USER_NICKNAME_OR_EMAIL_EXIST);
     }
     role = roles.includes(role) ? role : 'user';
-    const hashpwd = await bcrypt.hash(password,parseInt(process.env.ENCRYPT_COUNT));
+    const hashpwd = await bcrypt.hash(password, parseInt(process.env.ENCRYPT_COUNT));
     return await User.create({
-        id : v4(),
-        password : hashpwd,
+        id: v4(),
+        password: hashpwd,
         email,
         nickname,
         role,
-        level : 1,
+        level: 1,
         gender,
         birth
-    })
-}
+    });
+};
 
 exports.authLogin = async (req) => {
     const {
@@ -57,76 +56,76 @@ exports.authLogin = async (req) => {
         password
     } = req.body;
     const user = await User.findOne({
-        where : {
+        where: {
             email
         }
-    })
-    if(!user){
-        throw new BadRequest(Codes.USER_NOT_EXIST)
+    });
+    if (!user) {
+        throw new BadRequest(Codes.USER_NOT_EXIST);
     }
-    if(!await bcrypt.compare(password,user.password)){
+    if (!await bcrypt.compare(password, user.password)) {
         throw new BadRequest(Codes.USER_PASSWORD_UNMATCHED);
     }
-    return user
-}
+    return user;
+};
 
 exports.authDedicateEmail = async (req) => {
     const {
         email
-    } = req.body
+    } = req.body;
     const checkUserExist = await User.findOne({
         where: {
             email
         }
-    })
-    return Boolean(checkUserExist)
-}
+    });
+    return Boolean(checkUserExist);
+};
 
-exports.authDedicateNickname = async(req) => {
+exports.authDedicateNickname = async (req) => {
     const {
         nickname
-    } = req.body
+    } = req.body;
     const checkUserExist = await User.findOne({
-        where : {
+        where: {
             nickname
         }
-    })
-    return Boolean(checkUserExist)
-}
+    });
+    return Boolean(checkUserExist);
+};
 
-exports.authWithdraw = async(req) => {
+exports.authWithdraw = async (req) => {
     const {
         password
     } = req.body;
     const {
         id
-    } = req.decoded
+    } = req.decoded;
     const user = await User.findOne({
-        where : {
+        where: {
             id
         }
-    })
-    if(!await bcrypt.compare(password,user.password)){
+    });
+    if (!await bcrypt.compare(password, user.password)) {
         throw new BadRequest(Codes.USER_PASSWORD_UNMATCHED);
     }
     return await User.destroy({
-        where : {
+        where: {
             id
         }
-    })
-}
+    });
+};
 
-exports.authToken = async(req) => {
+exports.authToken = async (req) => {
     const {
         id
-    } = req.body
+    } = req.body;
     const user = await User.findOne({
-        where : {
+        where: {
             id
         }
-    })
-    if(!user){
-        throw new BadRequest(Codes.USER_NOT_EXIST)
+    });
+    if (!user) {
+        throw new BadRequest(Codes.USER_NOT_EXIST);
     }
-    return user
-}
+    return user;
+};

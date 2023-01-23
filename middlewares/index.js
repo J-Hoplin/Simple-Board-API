@@ -1,7 +1,7 @@
-const common= require('./common')
-const jwt = require('./jwtauth')
+const common = require('./common');
+const jwt = require('./jwtauth');
 
 module.exports = {
     ...common,
     ...jwt
-}
+};

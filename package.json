@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "entry" : "npx sequelize db:create && node www.js"
+    "entry": "npx sequelize db:create && node www.js"
   },
   "repository": {
     "type": "git",
@@ -34,5 +34,8 @@
     "swagger-ui-express": "^4.6.0",
     "uuid": "^9.0.0",
     "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.32.0"
   }
 }
