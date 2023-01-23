@@ -110,6 +110,7 @@ Simple RESTful API for Board Management with functions below
 |uuid|For uuid generation|
 |yamljs|Swagger doc, yaml dependency|
 |mongoose|MongoDB Connection|
+|eslint|Javascript Code Linter|
 
 ## Endpoints
 
